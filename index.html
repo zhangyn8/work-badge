@@ -1280,7 +1280,6 @@ body.nobar .rv-open{top:64px}
     <button type="button" data-role="advisor" aria-pressed="true">置业顾问 · 我的看板</button>
     <button type="button" data-role="admin" aria-pressed="false">管理员 · 案场看板</button>
   </div>
-  <label><input type="checkbox" id="noteToggle"> 显示设计批注</label>
   <button type="button" class="pv-btn" data-sim-live>演示：转写进度</button>
   <button type="button" class="pv-btn" data-sim-quota aria-pressed="false">演示：额度用完</button>
   <button type="button" class="pv-btn" data-sim-big aria-pressed="false">演示：团队人数多</button>
@@ -1417,7 +1416,7 @@ let role = 'advisor', period = 'week';
 const done = new Set();
 
 const ev = (key, label) => `<button type="button" class="ev" data-ev="${key}">${label}</button>`;
-const note = html => `<div class="note"><b>设计批注：</b>${html}</div>`;
+const note = () => '';   // 设计批注已从 Demo 中移除，规则说明以 PRD 为准
 
 // 导航：每项对应一个页面键
 // 导航：一级菜单；带 children 的为可展开分组（二级菜单）
@@ -3646,7 +3645,6 @@ document.addEventListener('keydown', e=>{
   // 跳页：回车生效；非数字忽略，超出范围取最近的有效页
   if(e.key==='Enter' && e.target.classList?.contains('pg-jump')){ const v=parseInt(e.target.value,10); if(v){ PG[e.target.dataset.pk].page=v; render(); } }
 });
-$('#noteToggle').addEventListener('change', e=>document.body.classList.toggle('notes', e.target.checked));
 
 // ============ 本轮优化新增（人员选择器 / 待办完成与改期 / 跟进记录 / 待协调处理 / 消息 / 详情翻页 等） ============
 const relTxt = (n, rel) => n.endsWith('的'+rel) ? '' : rel;      // 只知道关系、没留姓名的家人：名字已含关系，不重复显示
@@ -4180,7 +4178,7 @@ const _render = render; render = function(){ _render(); fadeAll(); };
 // 直达链接参数（#后面，& 分隔）：role=login|advisor|admin　page=home|clients|records|review|devices|quota　site=yunqi|lanting
 // sel=客户名　fam=tl|mem|need|iss|log　work=todo|idle|recent　data=rec|follow|ask　brief=brief|review
 // rid=liu 或 r:11-18 15:05（纪要详情）　dtab=note|chap|update　day=11-18（工作回顾）　dv=devices|accounts　qt=packs|ledger|usage
-// notes=1 显示设计批注　bar=0 隐藏顶部“原型预览”条
+// bar=0 隐藏顶部“原型预览”条
 function applyHash(){
   let h = location.hash.slice(1); if(!h) return; try{ h = decodeURIComponent(h); }catch(e){}
   const q = Object.fromEntries(h.split('&').map(s=>{ const i=s.indexOf('='); return i<0 ? [s,''] : [s.slice(0,i), s.slice(i+1)]; }));
@@ -4191,7 +4189,6 @@ function applyHash(){
   if(q.fam) at.fam=q.fam; if(q.work) at.work=q.work; if(q.data) at.data=q.data; if(q.brief) at.brief=q.brief;
   if(q.rid){ det.rid=q.rid; det.prev='records'; page='detail'; } if(q.dtab) det.tab=q.dtab;
   if(q.day) rv.day=q.day; if(q.dv) dv.tab=q.dv; if(q.qt) qv.tab=q.qt;
-  if(q.notes==='1'){ document.body.classList.add('notes'); $('#noteToggle').checked=true; }
   document.body.classList.toggle('nobar', q.bar==='0');
 }
 applyHash();
